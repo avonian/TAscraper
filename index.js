@@ -18,13 +18,13 @@ function sleep(ms) {
 
   let result = {};
 
-  sleep(3000);
+  await sleep(3000);
   /* Obtain overall rating */
   result.overallRating = await page.evaluate(`$('.overallRating').text()`);
 
   /* Click on all 'more' links */
-  await page.evaluate(`$('.ui_column > .prw_rup > .entry > .partial_entry > .ulBlueLinks').click()`);
-  sleep(3000);
+  await page.evaluate(`document.getElementsByClassName('ulBlueLinks')[0].click();`);
+  await sleep(3000);
 
   /* Scrape reviews */
   let reviewsQuery = `
@@ -33,6 +33,7 @@ function sleep(ms) {
       let review = $(el).closest('.reviewSelector');
       reviews.push({
         id: review.data('reviewid'),
+        title: review.find('.noQuotes').text(),
         date: review.find('.ratingDate').attr('title'),
         rating: review.find('.ui_bubble_rating').attr('class').split("_")[3] / 10,
         text: el.textContent
